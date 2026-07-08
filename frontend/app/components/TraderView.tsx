@@ -4,7 +4,7 @@ import { ArrowUpRight, ArrowDownRight, Search } from 'lucide-react';
 import TradingPoolSection from './TradingPoolSection';
 import { mockMinerals, getCurrentPrice, calculatePriceChange } from '@/app/utils/mockData';
 import type { PositionConfig, CompanyAsset } from '@/app/trade/page';
-import { convertUSDtoXRP } from '../../../apis/src/services/xrpPriceService.ts';
+import { convertUSDtoXRP } from '../../../apis/src/services/xrpPriceService';
 
 type MockMineralEntry = {
   priceHistory: { date: string; price: number; }[];
@@ -125,7 +125,7 @@ export default function TraderView({
         const estimatedUSD = tradeValue * selectedPool.price;
         try {
           const resp = await convertUSDtoXRP(estimatedUSD);
-          const xrpAmount = resp?.xrp ?? 0;
+          const xrpAmount = resp ?? 0;
           const formatted = (Number(xrpAmount) || 0).toFixed(6);
           if (!cancelled) setEstimatedXRP(prev => (prev !== formatted ? formatted : prev));
         } catch (error) {
@@ -399,7 +399,7 @@ export default function TraderView({
                     let requiredXrp = 0;
                     try {
                       const resp = await convertUSDtoXRP(estimatedUSD);
-                      requiredXrp = Number(resp?.xrp ?? 0);
+                      requiredXrp = Number(resp ?? 0);
                     } catch (err) {
                       console.error('Failed to convert USD to XRP at purchase time', err);
                       setBuyError('Unable to verify price — try again');

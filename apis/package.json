@@ -2,11 +2,11 @@
   "name": "mineral-trading-backend",
   "version": "1.0.0",
   "description": "Backend API for mineral trading platform",
-  "main": "dist/index.js",
+  "main": "dist/services/server.js",
   "scripts": {
-    "start": "npm run build && node dist/index.js",
+    "start": "npm run build && node dist/services/server.js",
     "build": "tsc",
-    "dev": "nodemon --watch src/**/*.ts --exec npx ts-node src/index.ts"
+    "dev": "nodemon --watch \"src/**/*.ts\" --exec \"npx ts-node src/services/server.ts\""
   },
   "keywords": [
     "api",
@@ -21,7 +21,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.19.2",
-    "xrpl": "^3.0.0"
+    "xrpl": "^4.4.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

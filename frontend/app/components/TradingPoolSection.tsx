@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Search, Users, DollarSign, Info } from 'lucide-react';
 import type { PositionConfig } from '@/app/trade/page';
 import { useWallet } from '@/app/context/WalletContext';
-import { convertUSDtoXRP } from '../../../apis/src/services/xrpPriceService.ts';
-import { createSellOffer } from '../../../apis/src/services/xrplNew.ts';
+import { convertUSDtoXRP } from '../../../apis/src/services/xrpPriceService';
+import { createSellOffer, loginWithSeed } from '../../../apis/src/services/xrplNew';
 
 type TradingPoolSectionProps = {
   positionConfigs: PositionConfig[];
@@ -138,19 +138,21 @@ export default function TradingPoolSection({ positionConfigs, setPositionConfigs
       try {
         const usd = sellAmount * sellPrice;
         const conv = await convertUSDtoXRP(usd);
-        const xrpAmount = Number(conv?.xrp ?? 0);
+        const xrpAmount = Number(conv ?? 0);
 
         const issuer = (pos as PosWithIssuer).issuer || walletAddress;
 
-        const resp = await createSellOffer({
-          seed: seedStr,
-          currency: pos.symbol,
-          issuer,
-          tokenAmount: String(sellAmount),
-          xrpAmount: String(xrpAmount)
-        });
+        const sellerWallet = loginWithSeed(seedStr);
 
-        const txHash = resp?.result?.tx_json?.hash || resp?.result?.hash || `user-${Date.now()}`;
+        const resp = await createSellOffer(
+          sellerWallet,
+          pos.symbol,
+          issuer,
+          String(sellAmount),
+          String(xrpAmount)
+        );
+
+        const txHash = resp?.result?.hash || `user-${Date.now()}`;
 
         const order: Order = {
           id: txHash,
@@ -557,7 +559,7 @@ export default function TradingPoolSection({ positionConfigs, setPositionConfigs
                     let requiredXrp = 0;
                     try {
                       const resp = await convertUSDtoXRP(estimatedUSD);
-                      requiredXrp = Number(resp?.xrp ?? 0);
+                      requiredXrp = Number(resp ?? 0);
                     } catch (err) {
                       console.error('Failed to convert USD to XRP at purchase time', err);
                       setActionError('Unable to verify price — try again');

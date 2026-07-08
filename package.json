@@ -7,7 +7,6 @@
     "apis"
   ],
   "scripts": {
-    "postinstall": "npm --prefix frontend ci && npm --prefix apis ci",
     "build": "npm run build:frontend",
     "build:frontend": "npm --prefix frontend run build",
     "build:apis": "npm --prefix apis run build",

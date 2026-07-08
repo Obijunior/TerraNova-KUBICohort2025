@@ -61,7 +61,7 @@ export function loginWithSeed(seed: string) {
 // ---------------------------------------------
 export async function createTrustline(
   holderWallet: Wallet,
-  issuerAddress: "rwQwc24TfDSjvNy3t9EWDAmoDaSnr6mENV", // string
+  issuerAddress: string,
   currency: string,
   limit = "1000000000"
 ) {

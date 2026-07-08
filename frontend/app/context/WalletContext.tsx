@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { getXRPBalance } from '../../../apis/src/services/xrplNew';
 
 interface WalletContextType {
   isConnected: boolean;
@@ -70,10 +71,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     try {
       setLoadingBalance(true);
-      const data = address;
-      // account_info may be at data.result.account_data or data.account_data
-      const drops = Number(data?.result?.account_data?.Balance ?? data?.account_data?.Balance ?? 0);
-      const balance = drops ? (drops / 1_000_000).toString() : '0';
+      // getXRPBalance returns the balance already converted to XRP as a string
+      const balance = await getXRPBalance(address);
       setXrpBalance(balance);
     } catch (err) {
       console.error('Failed to refresh XRP balance:', err);
